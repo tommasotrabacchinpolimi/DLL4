@@ -145,7 +145,7 @@ class TSPTransformer(nn.Module):
     self.last_decoder_layer = nn.TransformerDecoder(LastCustomDecoderLayer(d_model=self.d_d, dim_feedforward = self.dim_feedforward), num_layers=1)
 
   def get_tgt_causal_mask(self, tgt, batch_size, size, current_index, device):
-        mask = torch.tril(torch.ones(size, size) == 1, device = device)
+        mask = torch.tril(torch.ones(size, size, device = device) == 1)
         mask = mask.float()
 
         mask = mask.masked_fill(mask == 0, float('-1e9'))
