@@ -161,10 +161,10 @@ class TSPTransformer(nn.Module):
     return mask
 
 
-  def forward(self, src, batch_size):
+  def forward(self, src, batch_size, device):
     torch.autograd.set_detect_anomaly(True)
-    probs = torch.zeros(size = (batch_size, n, n))
-    tgt = torch.zeros(size = (batch_size, n), dtype=torch.long)
+    probs = torch.zeros(size = (batch_size, n, n), device = device)
+    tgt = torch.zeros(size = (batch_size, n), dtype=torch.long, device = device)
     for index in range(1, n):
       causal_mask = self.get_tgt_causal_mask(tgt, batch_size, n, index)
       cities_mask = self.get_memory_cities_mask(tgt, batch_size, n, index)
@@ -190,7 +190,7 @@ def train(model, device, train_loader, validation_dataloader, optimizer, epochs_
       train_loss = 0.0
       for idx, (coords, tours) in enumerate(train_loader):
           optimizer.zero_grad()
-          output, tgt = model(coords, coords.size(0))
+          output, tgt = model(coords, coords.size(0), device)
           loss = loss_fn(output, tours)
           train_loss += loss.item()
           loss.backward()
@@ -202,7 +202,7 @@ def train(model, device, train_loader, validation_dataloader, optimizer, epochs_
       with torch.no_grad():
           for coords, tours in validation_dataloader:
               coords, tours = coords.to(device), tours.to(device)
-              output, tgt = model(coords, coords.size(0))
+              output, tgt = model(coords, coords.size(0), device)
               loss = loss_fn(output, tours)
               val_loss += loss.item()
 
