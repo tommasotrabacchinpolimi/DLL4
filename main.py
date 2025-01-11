@@ -144,7 +144,7 @@ class TSPTransformer(nn.Module):
     self.decoder = nn.TransformerDecoder(CustomDecoderLayer(d_model=self.d_d, nhead=self.num_heads, dim_feedforward = self.dim_feedforward), num_layers=self.N_d)
     self.last_decoder_layer = nn.TransformerDecoder(LastCustomDecoderLayer(d_model=self.d_d, dim_feedforward = self.dim_feedforward), num_layers=1)
 
-  def get_tgt_causal_mask(self, tgt, batch_size, size, current_index):
+  def get_tgt_causal_mask(self, tgt, batch_size, size, current_index, device):
         mask = torch.tril(torch.ones(size, size) == 1)
         mask = mask.float()
 
@@ -153,7 +153,7 @@ class TSPTransformer(nn.Module):
 
         return mask
   
-  def get_memory_cities_mask(self, tgt, batch_size, size, current_index):
+  def get_memory_cities_mask(self, tgt, batch_size, size, current_index, device):
     mask = torch.zeros(size = (batch_size, size, size))
     mask.float()
     for b in range(batch_size):
@@ -166,8 +166,8 @@ class TSPTransformer(nn.Module):
     probs = torch.zeros(size = (batch_size, n, n), device = device)
     tgt = torch.zeros(size = (batch_size, n), dtype=torch.long, device = device)
     for index in range(1, n):
-      causal_mask = self.get_tgt_causal_mask(tgt, batch_size, n, index)
-      cities_mask = self.get_memory_cities_mask(tgt, batch_size, n, index)
+      causal_mask = self.get_tgt_causal_mask(tgt, batch_size, n, index, device)
+      cities_mask = self.get_memory_cities_mask(tgt, batch_size, n, index, device)
       y = self.linear1(src) * math.sqrt(self.d_e)
       x = self.embedding(tgt) * math.sqrt(self.d_d)
       x = self.pos(x)
