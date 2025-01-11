@@ -111,7 +111,7 @@ class LastCustomDecoderLayer(nn.TransformerDecoderLayer):
             x,
             memory,
             memory,
-            attn_mask=memory_mask[:32,:,:],
+            attn_mask=memory_mask[:x.size(0),:,:],
             key_padding_mask=None,
             is_causal=False,
             need_weights=True,
