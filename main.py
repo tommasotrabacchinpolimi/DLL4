@@ -145,7 +145,7 @@ class TSPTransformer(nn.Module):
     self.last_decoder_layer = nn.TransformerDecoder(LastCustomDecoderLayer(d_model=self.d_d, dim_feedforward = self.dim_feedforward), num_layers=1)
 
   def get_tgt_causal_mask(self, tgt, batch_size, size, current_index, device):
-        mask = torch.tril(torch.ones(size, size) == 1)
+        mask = torch.tril(torch.ones(size, size) == 1, device = device)
         mask = mask.float()
 
         mask = mask.masked_fill(mask == 0, float('-1e9'))
@@ -154,7 +154,7 @@ class TSPTransformer(nn.Module):
         return mask
   
   def get_memory_cities_mask(self, tgt, batch_size, size, current_index, device):
-    mask = torch.zeros(size = (batch_size, size, size))
+    mask = torch.zeros(size = (batch_size, size, size), device = device)
     mask.float()
     for b in range(batch_size):
         mask[b, tgt[b, :current_index], current_index] = float('-1e9')
