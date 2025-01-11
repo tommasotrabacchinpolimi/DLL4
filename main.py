@@ -166,7 +166,7 @@ class TSPTransformer(nn.Module):
     probs = torch.zeros(size = (batch_size, n, n), device = device)
     tgt = torch.zeros(size = (batch_size, n), dtype=torch.long, device = device)
     for index in range(1, n):
-      causal_mask = torch.repeat_interleave(self.get_tgt_causal_mask(tgt, batch_size, n, index, device), self.num_heads, dim=0)
+      causal_mask = self.get_tgt_causal_mask(tgt, batch_size, n, index, device)
       cities_mask = torch.repeat_interleave(self.get_memory_cities_mask(tgt, batch_size, n, index, device), self.num_heads, dim=0)
       y = self.linear1(src) * math.sqrt(self.d_e)
       x = self.embedding(tgt) * math.sqrt(self.d_d)
