@@ -181,11 +181,12 @@ class TSPTransformer(nn.Module):
       tgt[:, index] = next_token
     return probs, tgt
 
-def train(model, device, train_loader, optimizer, epochs_number):
+def train(model, device, train_loader, validation_dataloader, optimizer, epochs_number):
     model.to(device)
     model.train()
     loss_fn = CustomLoss()
     for epoch in range(epochs_number):
+      model.train()
       train_loss = 0.0
       for idx, (coords, tours) in enumerate(train_loader):
           optimizer.zero_grad()
@@ -195,27 +196,40 @@ def train(model, device, train_loader, optimizer, epochs_number):
           loss.backward()
           optimizer.step()
           
-      print(f"Epoch {epoch+1}: Train loss: {train_loss/len(dataloader)}")
-      #print(tgt)
+      print(f"Epoch {epoch+1}: Train loss: {train_loss/len(train_dataloader)}")
+      model.eval()
+      val_loss = 0.0
+      with torch.no_grad():
+          for coords, tours in validation_dataloader:
+              coords, tours = coords.to(device), tours.to(device)
+              output, tgt = model(coords, coords.size(0))
+              loss = loss_fn(output, tours)
+              val_loss += loss.item()
+
+      avg_val_loss = val_loss / len(validation_dataloader)
+      print(f"Epoch {epoch+1}: Validation loss: {avg_val_loss:.4f}")
+    
 
 
-file_path = "dummy_20_DLL_ass4.pkl"
-device = torch.device("cpu")
+file_path_train = "dummy_20_DLL_ass4.pkl"
+file_path_val = ""
+device = torch.device("cuda")
 
 
 # Load the pickle file
-with open(file_path, "rb") as file:
-    dataset_data = pickle.load(file)
-dataset = TSPDataset(dataset_data, device)
-dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
-del dataset
-del dataset_data
-print(len(dataloader))
+with open(file_path_train, "rb") as file_train:
+    dataset_train = pickle.load(file_train)
+
+with open(file_path_val, "rb") as file_val:
+    dataset_val = pickle.load(file_val)
+train_dataset = TSPDataset(dataset_train, device)
+validation_dataset = TSPDataset(dataset_val, device)
+train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+validation_dataloader = DataLoader(validation_dataset, batch_size=32, shuffle=True)
 model = TSPTransformer()
-#model.to(device)
+model.to(device)
 optimizer = optim.Adam(model.parameters(), lr=0.001)
-#optimizer = AdamW(model.parameters(), lr=6e-5, betas=(0.9, 0.95), weight_decay=1e-1)
-train(model, device, dataloader, optimizer, 100)
+train(model, device, train_dataloader,validation_dataloader,  optimizer, 100)
 # for idx, (coords, tours) in enumerate(dataloader):
 #   input = torch.zeros(size = (coords.size(0),n), dtype=torch.long)
 #   for i in range(1, n):
