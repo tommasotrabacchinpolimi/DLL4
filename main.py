@@ -125,7 +125,7 @@ class LastCustomDecoderLayer(nn.TransformerDecoderLayer):
       
 
 class TSPTransformer(nn.Module):
-  def __init__ (self, d_d = n, d_e = n, N_d = 1, N_e = 1, num_heads = 1, dim_feedforward = 0, dropout_p = 0.0):
+  def __init__ (self, d_d = n, d_e = n, N_d = 2, N_e = 2, num_heads = 4, dim_feedforward = 0, dropout_p = 0.0):
     super(TSPTransformer, self).__init__()
     self.d_d = d_d
     self.d_e = d_e
@@ -166,8 +166,8 @@ class TSPTransformer(nn.Module):
     probs = torch.zeros(size = (batch_size, n, n), device = device)
     tgt = torch.zeros(size = (batch_size, n), dtype=torch.long, device = device)
     for index in range(1, n):
-      causal_mask = self.get_tgt_causal_mask(tgt, batch_size, n, index, device)
-      cities_mask = self.get_memory_cities_mask(tgt, batch_size, n, index, device)
+      causal_mask = torch.repeat_interleave(self.get_tgt_causal_mask(tgt, batch_size, n, index, device), self.num_heads, dim=0)
+      cities_mask = torch.repeat_interleave(self.get_memory_cities_mask(tgt, batch_size, n, index, device), self.num_heads, dim=0)
       y = self.linear1(src) * math.sqrt(self.d_e)
       x = self.embedding(tgt) * math.sqrt(self.d_d)
       x = self.pos(x)
