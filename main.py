@@ -211,8 +211,8 @@ def train(model, device, train_loader, validation_dataloader, optimizer, epochs_
     
 
 
-file_path_train = "dummy_20_DLL_ass4.pkl"
-file_path_val = ""
+file_path_train = "/content/drive/MyDrive/train_20_DLL_ass4.pkl"
+file_path_val = "/content/drive/MyDrive/valid_20_DLL_ass4.pkl"
 device = torch.device("cuda")
 
 
