@@ -163,7 +163,6 @@ class TSPTransformer(nn.Module):
 
   def forward(self, src, batch_size, device, actual_tour = None):
     #torch.autograd.set_detect_anomaly(True)
-    assert actual_tour is None or actual_tour[0,0] == 0
     probs = torch.zeros(size = (batch_size, n, n), device = device)
     tgt = torch.zeros(size = (batch_size, n), dtype=torch.long, device = device)
     for index in range(1, n):
@@ -201,7 +200,7 @@ def train(model, device, train_loader, validation_dataloader, optimizer, epochs_
           train_loss += loss.item()
           loss.backward()
           optimizer.step()
-          
+
       print(f"Epoch {epoch+1}: Train loss: {train_loss/len(train_dataloader)}")
       model.eval()
       val_loss = 0.0
