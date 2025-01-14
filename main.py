@@ -189,6 +189,7 @@ def train(model, device, train_loader, validation_dataloader, optimizer, epochs_
       model.train()
       train_loss = 0.0
       for idx, (coords, tours) in enumerate(train_loader):
+          print(f"executing {ix} step")
           optimizer.zero_grad()
           output, tgt = model(coords, coords.size(0), device)
           loss = loss_fn(output, tours)
