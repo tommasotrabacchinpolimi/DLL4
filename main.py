@@ -145,7 +145,7 @@ class TSPTransformer(nn.Module):
     self.last_decoder_layer = nn.TransformerDecoder(LastCustomDecoderLayer(d_model=self.d_d, dim_feedforward = self.dim_feedforward), num_layers=1)
 
   def get_tgt_causal_mask(self, tgt, batch_size, size, current_index, device):
-        mask = torch.tril(torch.ones(size, size, device = device) == 1)
+        mask = torch.tril(torch.ones(size, size, device = device) == 1, diagonal = 1)
         mask = mask.float()
 
         mask = mask.masked_fill(mask == 0, float('-1e9'))
@@ -161,8 +161,8 @@ class TSPTransformer(nn.Module):
     return mask
 
 
-  def forward(self, src, batch_size, device):
-    torch.autograd.set_detect_anomaly(True)
+  def forward(self, src, batch_size, device, actual_tour = None):
+    #torch.autograd.set_detect_anomaly(True)
     probs = torch.zeros(size = (batch_size, n, n), device = device)
     tgt = torch.zeros(size = (batch_size, n), dtype=torch.long, device = device)
     for index in range(1, n):
@@ -178,7 +178,10 @@ class TSPTransformer(nn.Module):
       probs[:, index, :] = x[:, :, index]
       next_token = torch.argmax(probs[:, index, :], dim = 1)
       tgt = tgt.clone()
-      tgt[:, index] = next_token
+      if actual_tour is None:
+        tgt[:, index] = next_token
+      else:
+        tgt[:, :(index+1)] = actual_tour[:, :(index+1)]
     return probs, tgt
 
 def train(model, device, train_loader, validation_dataloader, optimizer, epochs_number):
@@ -213,9 +216,9 @@ def train(model, device, train_loader, validation_dataloader, optimizer, epochs_
     
 
 
-file_path_train = "/content/drive/MyDrive/train_20_DLL_ass4.pkl"
-file_path_val = "/content/drive/MyDrive/valid_20_DLL_ass4.pkl"
-device = torch.device("cuda")
+file_path_train = "dummy_20_DLL_ass4.pkl"
+file_path_val = "dummy_20_DLL_ass4.pkl"
+device = torch.device("cpu")
 
 
 # Load the pickle file
@@ -226,6 +229,7 @@ with open(file_path_val, "rb") as file_val:
     dataset_val = pickle.load(file_val)
 train_dataset = TSPDataset(dataset_train, device)
 validation_dataset = TSPDataset(dataset_val, device)
+#print(train_dataset.__getitem__(0))
 train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 validation_dataloader = DataLoader(validation_dataset, batch_size=32, shuffle=True)
 model = TSPTransformer()
