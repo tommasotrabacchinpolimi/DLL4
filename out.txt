@@ -1,0 +1,98 @@
+14/01/2025
+[Errno 2] No such file or directory: 'DLL4/'
+/content/DLL4
+/usr/local/lib/python3.10/dist-packages/torch/nn/init.py:511: UserWarning: Initializing zero-element tensors is a no-op
+  warnings.warn("Initializing zero-element tensors is a no-op")
+/usr/local/lib/python3.10/dist-packages/torch/nn/modules/transformer.py:379: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.self_attn.batch_first was not True(use batch_first for better inference performance)
+  warnings.warn(
+executing 0 step
+executing 100 step
+executing 200 step
+executing 300 step
+executing 400 step
+executing 500 step
+executing 600 step
+executing 700 step
+executing 800 step
+executing 900 step
+executing 1000 step
+executing 1100 step
+executing 1200 step
+executing 1300 step
+executing 1400 step
+executing 1500 step
+Epoch 1: Train loss: 9.171187947517927
+Epoch 1: Validation loss: 9.0582
+executing 0 step
+executing 100 step
+executing 200 step
+executing 300 step
+executing 400 step
+executing 500 step
+executing 600 step
+executing 700 step
+executing 800 step
+executing 900 step
+executing 1000 step
+executing 1100 step
+executing 1200 step
+executing 1300 step
+executing 1400 step
+executing 1500 step
+Epoch 2: Train loss: 8.670029995003649
+Epoch 2: Validation loss: 8.7440
+executing 0 step
+executing 100 step
+executing 200 step
+executing 300 step
+executing 400 step
+executing 500 step
+executing 600 step
+executing 700 step
+executing 800 step
+executing 900 step
+executing 1000 step
+executing 1100 step
+executing 1200 step
+executing 1300 step
+executing 1400 step
+executing 1500 step
+Epoch 3: Train loss: 8.47647501212698
+Epoch 3: Validation loss: 8.2631
+executing 0 step
+executing 100 step
+executing 200 step
+executing 300 step
+executing 400 step
+executing 500 step
+executing 600 step
+executing 700 step
+executing 800 step
+executing 900 step
+executing 1000 step
+executing 1100 step
+executing 1200 step
+executing 1300 step
+executing 1400 step
+executing 1500 step
+Epoch 4: Train loss: 8.409669111572773
+Epoch 4: Validation loss: 8.4494
+executing 0 step
+executing 100 step
+executing 200 step
+executing 300 step
+executing 400 step
+executing 500 step
+executing 600 step
+executing 700 step
+executing 800 step
+executing 900 step
+executing 1000 step
+executing 1100 step
+executing 1200 step
+executing 1300 step
+executing 1400 step
+executing 1500 step
+Epoch 5: Train loss: 8.369879159726016
+Epoch 5: Validation loss: 8.4146
+executing 0 step
