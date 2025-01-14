@@ -163,6 +163,7 @@ class TSPTransformer(nn.Module):
 
   def forward(self, src, batch_size, device, actual_tour = None):
     #torch.autograd.set_detect_anomaly(True)
+    assert actual_tour is None or actual_tour[0,0] == 0
     probs = torch.zeros(size = (batch_size, n, n), device = device)
     tgt = torch.zeros(size = (batch_size, n), dtype=torch.long, device = device)
     for index in range(1, n):
@@ -181,7 +182,7 @@ class TSPTransformer(nn.Module):
       if actual_tour is None:
         tgt[:, index] = next_token
       else:
-        tgt[:, :(index+1)] = actual_tour[:, :(index+1)]
+        tgt[:, index] = actual_tour[:, index]
     return probs, tgt
 
 def train(model, device, train_loader, validation_dataloader, optimizer, epochs_number):
